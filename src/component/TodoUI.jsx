@@ -1,11 +1,17 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { todoReducer } from "./reducer";
+import { RiCheckboxBlankCircleLine, RiCheckboxCircleLine } from "react-icons/ri";
 
 const initialState = {
     todos: [],
     filter: 'ALL',
+};
+
+const getInitialTodos = () => {
+    const storedTodos = localStorage.getItem("todos");
+    return storedTodos ? JSON.parse(storedTodos) : [];
 };
 
 
@@ -22,11 +28,15 @@ const getFilteredTodos = (todos, filter) => {
 
 
 const TodoUI = () => {
-    const [state, dispatch] = useReducer(todoReducer, initialState);
+    const [state, dispatch] = useReducer(todoReducer, { ...initialState, todos: getInitialTodos() });
     const [newTodo, setNewTodo] = useState('');
     const [showClose, setShowClose] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editedText, setEditedText] = useState('');
+
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(state.todos));
+    }, [state.todos]);
 
     const handleAddTodo = (e) => {
         e.preventDefault();
@@ -35,6 +45,7 @@ const TodoUI = () => {
             setNewTodo('');
         }
     };
+
 
     const handleEditTodo = (todo) => {
         setEditingId(todo.id);
@@ -56,16 +67,16 @@ const TodoUI = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-                <div className="bg-white shadow-lg rounded-lg py-4 px-2 w-full max-w-xl">
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="w-full max-w-xl px-2 py-4 bg-white rounded-lg shadow-lg">
 
-                    <form onSubmit={handleAddTodo} className="mt-6 flex items-center ">
+                    <form onSubmit={handleAddTodo} className="flex items-center mt-6 ">
                         <MdKeyboardArrowDown className="mx-2" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
                         <input
                             type="text"
-                            className="flex-1 border-b-2 text-gray-700 placeholder-gray-400 placeholder-opacity-50 focus:outline-none"
+                            className="flex-1 text-gray-700 placeholder-gray-400 placeholder-opacity-50 border-b-2 placeholder:italic focus:outline-none"
                             placeholder="What needs to be done?"
-                            value={newTodo}
+                            value={newTodo} 
                             onChange={(e) => setNewTodo(e.target.value)}
                         />
                     </form>
@@ -73,15 +84,19 @@ const TodoUI = () => {
                     <ul className="mt-6 space-y-2">
                         {getFilteredTodos(state.todos, state.filter).map((todo) => (
                             <li key={todo.id} onMouseEnter={() => setShowClose(todo.id)} onMouseLeave={() => setShowClose(null)}
-                                className="flex justify-between items-center border-b-2 p-2 ">
+                                className="flex items-center justify-between p-2 border-b-2 ">
                                 <div className="flex items-center">
                                     {editingId !== todo.id &&
-                                        < input
-                                            type="checkbox"
-                                            checked={todo.completed}
-                                            onChange={() => dispatch({ type: 'TOGGLE_TODO', payload: todo.id })}
-                                            className="mr-2 cursor-pointer rounded-[100%] "
-                                        />
+                                        <span
+                                            onClick={() => dispatch({ type: 'TOGGLE_TODO', payload: todo.id })}
+                                            className="mr-2 cursor-pointer"
+                                        >
+                                            {todo.completed ? (
+                                                <  RiCheckboxCircleLine className="text-green-500" />
+                                            ) : (
+                                                < RiCheckboxBlankCircleLine className="text-gray-500" />
+                                            )}
+                                        </span>
                                     }
                                     {editingId === todo.id ? (
                                         <input
@@ -119,19 +134,19 @@ const TodoUI = () => {
                         <span>{state.todos.filter((todo) => !todo.completed).length} item(s) left</span>
                         <div>
                             <button
-                                className={`mx-1 ${state.filter === 'ALL' ? 'border border-purple-400 p-2 rounded hover:border-purple-100' : ''}`}
+                                className={`mx-1 p-2 hover:border hover:border-purple-200 ${state.filter === 'ALL' ? 'border border-purple-400 p-2 rounded hover:border-purple-400' : ''}`}
                                 onClick={() => dispatch({ type: 'SET_FILTER', payload: 'ALL' })}
                             >
                                 All
                             </button>
                             <button
-                                className={`mx-1 ${state.filter === 'ACTIVE' ? 'border p-2 border-purple-400 rounded hover:border-purple-100' : ''}`}
+                                className={`mx-1 p-2 hover:border hover:border-purple-200 ${state.filter === 'ACTIVE' ? 'border p-2 border-purple-400 rounded hover:border-purple-400' : ''}`}
                                 onClick={() => dispatch({ type: 'SET_FILTER', payload: 'ACTIVE' })}
                             >
                                 Active
                             </button>
                             <button
-                                className={`mx-1 ${state.filter === 'COMPLETED' ? 'border p-2 border-purple-400 rounded hover:border-purple-100' : ''}`}
+                                className={`mx-1 p-2 hover:border hover:border-purple-200 ${state.filter === 'COMPLETED' ? 'border p-2 border-purple-400 rounded hover:border-purple-400' : ''}`}
                                 onClick={() => dispatch({ type: 'SET_FILTER', payload: 'COMPLETED' })}
                             >
                                 Completed
