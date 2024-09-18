@@ -2,12 +2,31 @@ import { useEffect, useReducer, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { todoReducer } from "./reducer";
-import { RiCheckboxBlankCircleLine, RiCheckboxCircleLine } from "react-icons/ri";
+import styled from "styled-components";
+
 
 const initialState = {
     todos: [],
     filter: 'ALL',
 };
+
+const StyledDiv = styled.div`
+    position: relative;
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: red;
+    };
+    content: '★';
+    margin-left: 5px;
+    
+}
+`
 
 const getInitialTodos = () => {
     const storedTodos = localStorage.getItem("todos");
@@ -70,13 +89,13 @@ const TodoUI = () => {
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="w-full max-w-xl px-2 py-4 bg-white rounded-lg shadow-lg">
 
-                    <form onSubmit={handleAddTodo} className="flex items-center mt-6 ">
-                        <MdKeyboardArrowDown className="mx-2" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
+                    <form onSubmit={handleAddTodo} className="flex items-center mt-6 pl-[0.9rem]">
+                        <MdKeyboardArrowDown className="mx-2 mr-6 scale-150" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
                         <input
                             type="text"
                             className="flex-1 text-gray-700 placeholder-gray-400 placeholder-opacity-50 border-b-2 placeholder:italic focus:outline-none placeholder:text-2xl placeholder:font-semibold"
                             placeholder="What needs to be done?"
-                            value={newTodo} 
+                            value={newTodo}
                             onChange={(e) => setNewTodo(e.target.value)}
                         />
                     </form>
@@ -92,9 +111,9 @@ const TodoUI = () => {
                                             className="mr-2 cursor-pointer"
                                         >
                                             {todo.completed ? (
-                                                <  RiCheckboxCircleLine className="text-green-500" />
+                                                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E" alt="" />
                                             ) : (
-                                                < RiCheckboxBlankCircleLine className="text-gray-500" />
+                                                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E" alt="" />
                                             )}
                                         </span>
                                     }
@@ -109,12 +128,12 @@ const TodoUI = () => {
                                             autoFocus
                                         />
                                     ) : (
-                                        <span
-                                            className={`${todo.completed ? 'line-through text-gray-400' : ''}`}
+                                        <StyledDiv
+                                            className={`${todo.completed ? ' text-gray-400 flex items-center' : ''}`}
                                             onDoubleClick={() => handleEditTodo(todo)}
                                         >
-                                            {todo.text}
-                                        </span>
+                                            <span className="relative -top-[2.6px]">{todo.text}</span>
+                                        </StyledDiv>
                                     )}
                                 </div>
                                 {showClose === todo.id && editingId !== todo.id &&
@@ -130,7 +149,7 @@ const TodoUI = () => {
                     </ul>
 
 
-                    <div className="flex justify-between mt-6 text-sm text-gray-500">
+                    <div className="flex items-center justify-between mt-6 text-sm text-gray-500">
                         <span>{state.todos.filter((todo) => !todo.completed).length} item(s) left</span>
                         <div>
                             <button
