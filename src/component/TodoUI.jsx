@@ -74,7 +74,7 @@ const TodoUI = () => {
                         <MdKeyboardArrowDown className="mx-2" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
                         <input
                             type="text"
-                            className="flex-1 text-gray-700 placeholder-gray-400 placeholder-opacity-50 border-b-2 placeholder:italic focus:outline-none"
+                            className="flex-1 text-gray-700 placeholder-gray-400 placeholder-opacity-50 border-b-2 placeholder:italic focus:outline-none placeholder:text-2xl placeholder:font-semibold"
                             placeholder="What needs to be done?"
                             value={newTodo} 
                             onChange={(e) => setNewTodo(e.target.value)}
