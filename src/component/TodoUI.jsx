@@ -3,7 +3,8 @@ import { IoMdClose } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { todoReducer } from "./reducer";
 import styled from "styled-components";
-
+import circle from "../assets/circle.svg"
+import tick from "../assets/tick.svg"
 
 const initialState = {
     todos: [],
@@ -25,8 +26,7 @@ const StyledDiv = styled.div`
     content: '★';
     margin-left: 5px;
     
-}
-`
+}`
 
 const getInitialTodos = () => {
     const storedTodos = localStorage.getItem("todos");
@@ -90,7 +90,7 @@ const TodoUI = () => {
                 <div className="w-full max-w-xl px-2 py-4 bg-white rounded-lg shadow-lg">
 
                     <form onSubmit={handleAddTodo} className="flex items-center mt-6 pl-[0.9rem]">
-                        <MdKeyboardArrowDown className="mx-2 mr-6 scale-150" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
+                        <MdKeyboardArrowDown className="w-8 h-8 mr-6 scale-125" onClick={() => dispatch({ type: 'CHECK_ALL' })} />
                         <input
                             type="text"
                             className="flex-1 text-gray-700 placeholder-gray-400 placeholder-opacity-50 border-b-2 placeholder:italic focus:outline-none placeholder:text-2xl placeholder:font-semibold"
@@ -111,9 +111,9 @@ const TodoUI = () => {
                                             className="mr-2 cursor-pointer"
                                         >
                                             {todo.completed ? (
-                                                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E" alt="" />
+                                                <img src={tick} alt="tick" />
                                             ) : (
-                                                <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E" alt="" />
+                                                <img src={circle} alt="circle" />
                                             )}
                                         </span>
                                     }
